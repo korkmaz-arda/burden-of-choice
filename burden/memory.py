@@ -25,11 +25,11 @@ class MemoryFile:
             msg = f"Error: An unexpected error occurred while loading memory: {e}"
             return MemoryResponse(msg)
 
-    def save(self, memory):
-        history.append(memory.copy())
+    def save(self, data):
+        history.append(data.copy())
         try:
             with open(self.path, "w") as file:
-                json.dump(memory, file)
+                json.dump(data, file)
             return MemoryResponse()
         except Exception as e:
             msg = f"Error: An unexpected error occurred while saving memory: {e}"
