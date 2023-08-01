@@ -3,13 +3,16 @@ import json
 
 class MemoryFile:
     _instance = None
+    path = None
     history = []
 
-    def __new__(cls, memory_path=None, *args, **kwargs):
+    def __new__(cls, path=None, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls, *args, **kwargs)
-            cls.memory_path = memory_path if memory_path is not None else "decision_memory.json"
         return cls._instance
+
+    def __init__(self, path=None, *args, **kwargs):
+        self.path = path if path is not None else "decision_memory.json"
 
     def load(self):
         try:
