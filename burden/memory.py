@@ -38,6 +38,8 @@ class MemoryFile:
             msg = f"Error: An unexpected error occurred while saving memory: {e}"
             return MemoryResponse(msg)
 
+    def clear_cache(self):
+        cache = []
 
 class MemoryResponse:
     def __init__(self, error_message=None, data=None):
