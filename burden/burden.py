@@ -91,7 +91,5 @@ def add_command(add_type, category, option, tags):
     pass
 
 
-
-
 if __name__ == "__main__":
     app()
