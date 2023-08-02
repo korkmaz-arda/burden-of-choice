@@ -5,7 +5,7 @@ from memory import MemoryFile
 app = typer.Typer()
 
 
-def load():
+def load_data():
     memory = MemoryFile()
     response = memory.load()
     if response.error_message:
@@ -23,7 +23,7 @@ def save(data):
 
 
 def get_options(category, tags=None):
-    data = load()
+    data = load_data()
     options = data[category]
 
     if tags:
@@ -39,7 +39,7 @@ def get_options(category, tags=None):
 
 
 def get_tags(category):
-    data = load()
+    data = load_data()
     options = data[category]
 
     tags = [tag for option in options for tag in option["tags"]]
@@ -47,7 +47,7 @@ def get_tags(category):
 
 
 def validate(category, option=None, tags=None):
-    data = load()
+    data = load_data()
     if category not in data:
         typer.echo(f"Error: Category '{category}' does not exist.")
         raise typer.Abort()
