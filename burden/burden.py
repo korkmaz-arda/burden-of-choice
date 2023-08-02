@@ -64,5 +64,11 @@ def validate(category, option=None, tags=None):
                 raise typer.Abort()
 
 
+def _add(category, option=None, tags=None):
+    # TODO
+    pass
+
+
+
 if __name__ == "__main__":
     app()
