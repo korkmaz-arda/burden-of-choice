@@ -46,5 +46,23 @@ def get_tags(category):
     return tags
 
 
+def validate(category, option=None, tags=None):
+    data = load()
+    if category not in data:
+        typer.echo(f"Error: Category '{category}' does not exist.")
+        raise typer.Abort()
+
+    if option and (option not in data[category]):
+        typer.echo(f"Error: Option '{option}' does not exist in '{category}' category.")
+        raise typer.Abort()
+
+    if tags:
+        available_tags = get_tags(category)
+        for tag in tags:
+            if tag not in available_tags:
+                typer.echo(f"Error: Tag '{tag}' does not exist in '{category}' category.")
+                raise typer.Abort()
+
+
 if __name__ == "__main__":
     app()
