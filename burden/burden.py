@@ -15,7 +15,7 @@ def load_data():
     return response.data
 
 
-def save(data):
+def save_data(data):
     memory = MemoryFile()
     response = memory.save(data)
     if response.error_message:
