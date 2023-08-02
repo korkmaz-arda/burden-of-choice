@@ -69,6 +69,29 @@ def _add(category, option=None, tags=None):
     pass
 
 
+@app.command(name="add")
+def add_command(add_type, category, option, tags):
+    """
+    Add a new type, category, option, or tags.
+
+    USAGE:
+        $ ... add category category_name
+        $ ... add option category_name option_name
+        $ ... add option category_name option_name tag_name tag_name2 ...
+        $ ... add tag category_name option_name tag_name
+        $ ... add tag category_name option_name tag_name tag_name2 ...
+
+    Parameters:
+        add_type (str): The type to add (e.g., 'category', 'option', or 'tag').
+        category (str): The category to add (required for 'category', 'option', and 'tag' types).
+        option (str): The option to add (required for 'option' and 'tag' types).
+        tags (List[str]): Additional tags to add (optional for 'option' and 'tag' types).
+    """
+    # TODO
+    pass
+
+
+
 
 if __name__ == "__main__":
     app()
