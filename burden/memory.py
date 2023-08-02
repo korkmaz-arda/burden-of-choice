@@ -4,7 +4,7 @@ import json
 class MemoryFile:
     _instance = None
     path = None
-    history = []
+    cache = []
 
     def __new__(cls, path=None, *args, **kwargs):
         if cls._instance is None:
@@ -29,7 +29,7 @@ class MemoryFile:
             return MemoryResponse(msg)
 
     def save(self, data):
-        history.append(data.copy())
+        cache.append(data.copy())
         try:
             with open(self.path, "w") as file:
                 json.dump(data, file)
