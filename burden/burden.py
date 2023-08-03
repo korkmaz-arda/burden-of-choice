@@ -69,9 +69,6 @@ def validate(category, option=None, tags=None):
 def _add(category, option=None, tags=None):
     # TODO
     pass
-    print("category:", category)
-    print("option:", option)
-    print("tags:", tags)
 
 
 @app.command(name="add")
@@ -107,6 +104,8 @@ def add_cmd(add_type: str, category: str,
         raise typer.Abort()
 
     if add_type == 'category':
+        if option or tags:
+            typer.echo("Warning: 'add category' command doesn't take options and tags.")
         _add(category)
     elif add_type == 'option':
         validate(category)
@@ -117,11 +116,6 @@ def add_cmd(add_type: str, category: str,
     else:
         typer.echo(f"Error: Invalid item type '{add_type}'.")
         raise typer.Abort()
-
-
-@app.command()
-def donothing():
-    pass
 
 
 if __name__ == "__main__":
