@@ -1,6 +1,8 @@
 import typer
 import random
 from memory import MemoryFile
+from typing import List, Optional
+from typing_extensions import Annotated
 
 app = typer.Typer()
 
@@ -67,27 +69,58 @@ def validate(category, option=None, tags=None):
 def _add(category, option=None, tags=None):
     # TODO
     pass
+    print("category:", category)
+    print("option:", option)
+    print("tags:", tags)
 
 
 @app.command(name="add")
-def add_command(add_type, category, option, tags):
+def add_cmd(add_type: str, category: str, 
+            option: Annotated[Optional[str], typer.Argument()] = None, 
+            tags: Annotated[Optional[List[str]], typer.Argument()] = None):
     """
     Add a new type, category, option, or tags.
 
-    USAGE:
-        $ ... add category category_name
-        $ ... add option category_name option_name
-        $ ... add option category_name option_name tag_name tag_name2 ...
-        $ ... add tag category_name option_name tag_name
-        $ ... add tag category_name option_name tag_name tag_name2 ...
+    Usage: 
+        $ burden.py add category category_name
+        $ burden.py add option category_name option_name
+        $ burden.py add option category_name option_name tag_name tag_name2 ...
+        $ burden.py add tag category_name option_name tag_name
+        $ burden.py add tag category_name option_name tag_name tag_name2 ...
 
     Parameters:
-        add_type (str): The type to add (e.g., 'category', 'option', or 'tag').
-        category (str): The category to add (required for 'category', 'option', and 'tag' types).
-        option (str): The option to add (required for 'option' and 'tag' types).
-        tags (List[str]): Additional tags to add (optional for 'option' and 'tag' types).
+        add_type (str): Type of the item being added (e.g., 'category', 'option', or 'tag').
+        category (str): Category to add or add to (required for 'category', 'option', and 'tag' types).
+        option (str, optional): Option to add or add to (required for 'option' and 'tag' types).
+        tags (List[str], optional): Additional tags to bind to an option (required for 'tag' type and optional for 'option' type).
     """
-    # TODO
+    if not category:
+        typer.echo("Error: 'category' field can't be empty")
+        raise typer.Abort()
+
+    if not option and add_type in ['option', 'tag']:
+        typer.echo("Error: 'option' field can't be empty when trying to add an option or a tag.")
+        raise typer.Abort()
+
+    if not tags and add_type == "tag":
+        typer.echo("Error: 'tags' field can't be empty when trying to add a tag.")
+        raise typer.Abort()
+
+    if add_type == 'category':
+        _add(category)
+    elif add_type == 'option':
+        validate(category)
+        _add(category, option)
+    elif add_type == 'tag':
+        validate(category, option)
+        _add(category, option, tags)
+    else:
+        typer.echo(f"Error: Invalid item type '{add_type}'.")
+        raise typer.Abort()
+
+
+@app.command()
+def donothing():
     pass
 
 

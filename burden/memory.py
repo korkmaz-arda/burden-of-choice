@@ -41,6 +41,7 @@ class MemoryFile:
     def clear_cache(self):
         cache = []
 
+
 class MemoryResponse:
     def __init__(self, error_message=None, data=None):
         self.error_message = error_message
