@@ -40,11 +40,13 @@ def get_options(category, tags=None):
     return filtered_options
 
 
-def get_tags(category):
+def get_tags(category, option=None):
     data = load_data()
     options = data[category]
+    if option:
+        options = [entry for entry in options if entry["name"] == option]
 
-    tags = [tag for option in options for tag in option["tags"]]
+    tags = [tag for entry in options for tag in entry["tags"]]
     return tags
 
 
@@ -55,20 +57,48 @@ def validate(category, option=None, tags=None):
         raise typer.Abort()
 
     if option and (option not in data[category]):
-        typer.echo(f"Error: Option '{option}' does not exist in '{category}' category.")
+        typer.echo(f"Error: Option '{option}' does not exist in '{category}'.")
         raise typer.Abort()
 
     if tags:
-        available_tags = get_tags(category)
+        available_tags = get_tags(category, option)
         for tag in tags:
             if tag not in available_tags:
-                typer.echo(f"Error: Tag '{tag}' does not exist in '{category}' category.")
+                typer.echo(f"Error: Tag '{tag}' does not exist in '{category}'.")
                 raise typer.Abort()
 
 
-def _add(category, option=None, tags=None):
-    # TODO
-    pass
+def add_category(category):
+    data = load_data()
+    if category in data:
+        typer.echo(f"Warning: Category '{category}' already exists.")
+        return
+
+    data[category] = []
+    save_data(data)
+    typer.echo(f"Category '{category}' added.")
+
+
+def add_option(category, option, tags=None):
+    data = load_data()
+    options = get_options(category)
+    if option in options:
+        typer.echo(f"Option '{option}' already exists in '{category}'.")
+        return
+
+    new_entry = {"name": option, "tags": tags}
+    data[category].append(new_entry)
+    save_data(data)
+    typer.echo(f"Option '{option}' added to '{category}' with tags: {', '.join(tags)}")
+
+
+def add_tag(category, option, tags):
+    data = load_data()
+    for i, entry in enumerate(data[category]):
+        if entry["name"] == option:
+            data[category][i] = {"name": option, "tags": entry["tags"]+tags}
+    save_data(data)
+    typer.echo(f"Tag(s) {', '.join(tags)} added to '{option}' in '{category}'")
 
 
 @app.command(name="add")
@@ -80,10 +110,10 @@ def add_cmd(add_type: str, category: str,
 
     Usage: 
         $ burden.py add category category_name
-        $ burden.py add option category_name option_name
-        $ burden.py add option category_name option_name tag_name tag_name2 ...
-        $ burden.py add tag category_name option_name tag_name
-        $ burden.py add tag category_name option_name tag_name tag_name2 ...
+        $ burden.py add option category_name entryname
+        $ burden.py add option category_name entryname tag_name tag_name2 ...
+        $ burden.py add tag category_name entryname tag_name
+        $ burden.py add tag category_name entryname tag_name tag_name2 ...
 
     Parameters:
         add_type (str): Type of the item being added (e.g., 'category', 'option', or 'tag').
@@ -105,14 +135,14 @@ def add_cmd(add_type: str, category: str,
 
     if add_type == 'category':
         if option or tags:
-            typer.echo("Warning: 'add category' command doesn't take options and tags.")
-        _add(category)
+            typer.echo("Warning: 'add category' command doesn't take options or tags.")
+        add_category(category)
     elif add_type == 'option':
         validate(category)
-        _add(category, option)
+        add_option(category, option)
     elif add_type == 'tag':
         validate(category, option)
-        _add(category, option, tags)
+        add_tag(category, option, tags)
     else:
         typer.echo(f"Error: Invalid item type '{add_type}'.")
         raise typer.Abort()

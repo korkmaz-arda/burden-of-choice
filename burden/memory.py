@@ -17,6 +17,7 @@ class MemoryFile:
     def load(self):
         try:
             with open(self.path, "r") as file:
+                data = json.load(file)
                 return MemoryResponse(data=data)
         except FileNotFoundError:
             msg = "Error: Unable to access memory file."
