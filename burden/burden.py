@@ -148,5 +148,21 @@ def add_cmd(add_type: str, category: str,
         raise typer.Abort()
 
 
+@app.command(name="remove")
+def remove_cmd(add_type, category, option, tags):
+    # TODO
+    pass
+
+
+@app.command(name="choose")
+def choose_cmd(category: str, 
+               tags: Annotated[Optional[List[str]], typer.Argument()] = None):
+    validate(category=category, tags=tags)
+    options = get_options(category, tags)
+    rand_option = random.choice(options)
+
+    typer.echo(f"The program chooses: {rand_option}")
+
+
 if __name__ == "__main__":
     app()
