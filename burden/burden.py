@@ -148,9 +148,40 @@ def add_cmd(add_type: str, category: str,
         raise typer.Abort()
 
 
+def remove_category(category):
+    data = load_data()
+    del data[category]
+    save_data(data)
+
+    typer.echo(f"Category '{category}' removed.")
+
+
+def remove_option(category, option):
+    data = load_data()
+    for i, entry in enumerate(data[category]):
+        if entry["name"] == option:
+            del data[category][i]
+    save_data(data)
+
+    typer.echo(f"Option '{option}' removed from category '{category}'.")
+
+
+def remove_tag(category, option, tags):
+    data = load_data()
+    for i, entry in enumerate(data[category]):
+        if entry["name"] == option:
+            for tag in tags:
+                entry["tags"].remove(tag)
+    save_data(data)
+
+    typer.echo(f"Tag(s) {', '.join(tags)} removed from '{option}' in '{category}'")
+    
+
 @app.command(name="remove")
-def remove_cmd(add_type, category, option, tags):
-    # TODO
+def remove_cmd(del_type: str, category: str, 
+               option: Annotated[Optional[str], typer.Argument()] = None, 
+               tags: Annotated[Optional[List[str]], typer.Argument()] = None):
+    validate(category, option, tags)
     pass
 
 
