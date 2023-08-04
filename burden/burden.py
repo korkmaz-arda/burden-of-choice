@@ -110,10 +110,10 @@ def add_cmd(add_type: str, category: str,
 
     Usage: 
         $ burden.py add category category_name
-        $ burden.py add option category_name entryname
-        $ burden.py add option category_name entryname tag_name tag_name2 ...
-        $ burden.py add tag category_name entryname tag_name
-        $ burden.py add tag category_name entryname tag_name tag_name2 ...
+        $ burden.py add option category_name option_name
+        $ burden.py add option category_name option_name tag_name tag_name2 ...
+        $ burden.py add tag category_name option_name tag_name
+        $ burden.py add tag category_name option_name tag_name tag_name2 ...
 
     Parameters:
         add_type (str): Type of the item being added (e.g., 'category', 'option', or 'tag').
