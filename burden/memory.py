@@ -30,7 +30,7 @@ class MemoryFile:
             return MemoryResponse(msg)
 
     def save(self, data):
-        cache.append(data.copy())
+        self.cache.append(data.copy())
         try:
             with open(self.path, "w") as file:
                 json.dump(data, file)
@@ -40,7 +40,7 @@ class MemoryFile:
             return MemoryResponse(msg)
 
     def clear_cache(self):
-        cache = []
+        self.cache = []
 
 
 class MemoryResponse:

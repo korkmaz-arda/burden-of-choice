@@ -106,7 +106,7 @@ def add_cmd(add_type: str, category: str,
             option: Annotated[Optional[str], typer.Argument()] = None, 
             tags: Annotated[Optional[List[str]], typer.Argument()] = None):
     """
-    Add a new type, category, option, or tags.
+    Add a new category, option, or tags.
 
     Usage: 
         $ burden.py add category category_name
@@ -139,7 +139,7 @@ def add_cmd(add_type: str, category: str,
         add_category(category)
     elif add_type == 'option':
         validate(category)
-        add_option(category, option)
+        add_option(category, option, tags)
     elif add_type == 'tag':
         validate(category, option)
         add_tag(category, option, tags)
@@ -181,17 +181,68 @@ def remove_tag(category, option, tags):
 def remove_cmd(del_type: str, category: str, 
                option: Annotated[Optional[str], typer.Argument()] = None, 
                tags: Annotated[Optional[List[str]], typer.Argument()] = None):
-    validate(category, option, tags)
-    pass
+    """
+    Remove a category, option, or tags.
+
+    Usage:
+        $ burden.py remove category category_name
+        $ burden.py remove option category_name option_name
+        $ burden.py remove tag category_name option_name tag_name tag_name2 ...
+
+    Parameters:
+        del_type (str): Type of the item being removed (e.g., 'category', 'option', or 'tag').
+        category (str): Category to remove from (required for 'category', 'option', and 'tag' types).
+        option (str, optional): Option to remove (required for 'option' and 'tag' types).
+        tags (List[str], optional): Tags to remove from an option (required for 'tag' type and optional for 'option' type).
+    """
+    if not category:
+        typer.echo("Error: 'category' field can't be empty")
+        raise typer.Abort()
+
+    if not option and del_type in ['option', 'tag']:
+        typer.echo("Error: 'option' field can't be empty when trying to remove an option or a tag.")
+        raise typer.Abort()
+
+    if not tags and del_type == "tag":
+        typer.echo("Error: 'tags' field can't be empty when trying to remove a tag.")
+        raise typer.Abort()
+
+    if del_type == 'category':
+        if option or tags:
+            typer.echo("Warning: 'remove category' command doesn't take options or tags.")
+        remove_category(category)
+    elif del_type == 'option':
+        validate(category, option)
+        remove_option(category, option)
+    elif del_type == 'tag':
+        validate(category, option, tags)
+        remove_tag(category, option, tags)
+    else:
+        typer.echo(f"Error: Invalid item type '{del_type}'.")
+        raise typer.Abort()
 
 
 @app.command(name="choose")
 def choose_cmd(category: str, 
                tags: Annotated[Optional[List[str]], typer.Argument()] = None):
+    """
+    Choose an option from a category.
+
+    Usage:
+        $ burden.py choose category_name
+        $ burden.py choose category_name tag_name tag_name2 ...
+
+    Parameters:
+        category (str): Category to choose from.
+        tags (List[str], optional): Tags to filter options for choosing.
+    """
     validate(category=category, tags=tags)
     options = get_options(category, tags)
-    rand_option = random.choice(options)
+    if not options:
+        typer.echo(f"No options found in '{category}' with given tags.")
+        raise typer.Abort()
 
+    rand_option = random.choice(options)
     typer.echo(f"The program chooses: {rand_option}")
 
 
