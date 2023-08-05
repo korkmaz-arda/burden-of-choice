@@ -56,12 +56,13 @@ def validate(category, option=None, tags=None):
         typer.echo(f"Error: Category '{category}' does not exist.")
         raise typer.Abort()
 
-    if option and (option not in data[category]):
+    if option and (option not in get_options(category)):
         typer.echo(f"Error: Option '{option}' does not exist in '{category}'.")
         raise typer.Abort()
 
     if tags:
         available_tags = get_tags(category, option)
+        print("available_tags:", available_tags) # DELETE
         for tag in tags:
             if tag not in available_tags:
                 typer.echo(f"Error: Tag '{tag}' does not exist in '{category}'.")
@@ -244,6 +245,17 @@ def choose_cmd(category: str,
 
     rand_option = random.choice(options)
     typer.echo(f"The program chooses: {rand_option}")
+
+
+@app.command()
+def clear_memory(source: str):
+    """
+    Remove all items and from the memory.
+
+    Usage:
+        $ burden.py clear-memory
+    """
+    save_data({})
 
 
 if __name__ == "__main__":
