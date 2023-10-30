@@ -1,2 +1,2 @@
 # burden-of-choice
-Simple command line tool that makes decisions for you
+ A simple command line tool that frees you from the burden of choice.
